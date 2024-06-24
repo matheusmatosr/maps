@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+}
+
+/* Mapa */
+.container-map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Modal */
+.control-panel { 
+  position: relative;
+  margin-left: auto;
+  top: -100%;
+  right: 1%;
+  background-color: #000;
+  color: #fff;
+  width: 200px;
+  height: 100px;
+  border-radius: 10px;
+}
