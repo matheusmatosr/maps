@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './assets/style.css';
 import MapSection from './views/mapSection';
 
 function App() {

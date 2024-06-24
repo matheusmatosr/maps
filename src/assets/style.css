@@ -15,11 +15,17 @@
 .control-panel { 
   position: relative;
   margin-left: auto;
-  top: -100%;
-  right: 1%;
-  background-color: #000;
+  top: 20px;
+  font-size: 15px;
+  right: 20px;
+  background-color: #5b5959;
   color: #fff;
   width: 200px;
-  height: 100px;
+  height: 135px;
   border-radius: 10px;
+  border: 1px solid white;
+} 
+
+.control-panel h3{
+  text-decoration: underline;
 }
