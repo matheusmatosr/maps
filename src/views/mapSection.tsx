@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import axios from 'axios';
 import Map, { Popup, Source, Layer, MapLayerMouseEvent, ViewStateChangeEvent } from 'react-map-gl';
 import ControlPanel from '../components/controlPainel';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -15,54 +16,61 @@ const MapSection: React.FC = () => {
     minZoom: 2,
     maxZoom: 14
   });
-
-  const geoJson = useMemo(() => ({
+  const [geoJson, setGeoJson] = useState({
     type: 'FeatureCollection' as const,
-    features: [
-      {
-        type: 'Feature' as const,
-        geometry: {
-          type: 'Point' as const,
-          coordinates: [-48.6485686, -26.9945945]
-        },
-        properties: {
-          id: 1,
-          geoName: "Panvel - SC",
-          value: [100],
-          formattedValue: ["100"],
-          maxValueIndex: 0
-        }
-      },
-      {
-        type: 'Feature' as const,
-        geometry: {
-          type: 'Point' as const,
-          coordinates: [-41.6625, -22.2033]
-        },
-        properties: {
-          id: 2,
-          geoName: "PDC - ES",
-          value: [100],
-          formattedValue: ["100"],
-          maxValueIndex: 0
-        }
-      },
-      {
-        type: 'Feature' as const,
-        geometry: {
-          type: 'Point' as const,
-          coordinates: [-53.2953786, -23.7580282]
-        },
-        properties: {
-          id: 3,
-          geoName: "Panvel - PR",
-          value: [100],
-          formattedValue: ["100"],
-          maxValueIndex: 0
+    features: [] as any[]
+  });
+
+  const locations = [
+    { name: "Shopping Vitória", address: "Av. Américo Buaiz, 200 - Enseada do Suá, Vitória - ES, 29050-902" },
+    { name: "BH Shopping", address: " BR-356, 3049 - Belvedere, Belo Horizonte - MG, 30320-900" },
+    { name: "Shopping RioSul", address: "Rua Lauro Müller, 116 - Botafogo, Rio de Janeiro - RJ, 22290-160" }
+  ];
+
+  const geocodeAddress = async (address: string) => {
+    const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`, {
+      params: {
+        access_token: MAPBOX_TOKEN
+      }
+    });
+    const data = response.data;
+    if (data && data.features && data.features.length > 0) {
+      const [longitude, latitude] = data.features[0].center;
+      return { longitude, latitude };
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const fetchGeocodes = async () => {
+      const features = [];
+      for (const location of locations) {
+        const coords = await geocodeAddress(location.address);
+        if (coords) {
+          features.push({
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: [coords.longitude, coords.latitude]
+            },
+            properties: {
+              id: features.length + 1,
+              geoName: location.name,
+              value: [100],
+              formattedValue: ["100"],
+              maxValueIndex: 0
+            }
+          });
         }
       }
-    ]
-  }), []);
+      setGeoJson({
+        type: 'FeatureCollection',
+        features
+      });
+    };
+
+    fetchGeocodes();
+  }, []);
 
   const onHover = useCallback((event: MapLayerMouseEvent) => {
     const feature = event.features && event.features[0];
