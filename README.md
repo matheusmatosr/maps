@@ -6,7 +6,7 @@
 
 1. Clone este repositório
 ```bash
-git clone https://github.com/matheusmatosr/ignai-map.git
+git clone https://github.com/matheusmatosr/maps.git
 ```
 
 Abra o terminal e faça os seguintes códigos:
